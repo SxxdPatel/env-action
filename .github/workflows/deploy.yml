@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - main
-      - dev
+      - testing
 
 # env:
 #   MONGODB_CLUSTER_ADDRESS: cluster0.7pmgbgx.mongodb.net
