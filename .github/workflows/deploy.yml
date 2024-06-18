@@ -11,16 +11,25 @@ on:
 #   MONGODB_PASSWORD: U2fGcdxcT6CjL03N
 #   PORT: 8080
 
-env:
-  MONGODB_CLUSTER_ADDRESS: ${{ vars.MONGODB_CLUSTER_ADDRESS }}
-  MONGODB_USERNAME: ${{ secrets.MONGODB_USERNAME }}
-  MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
-  PORT: ${{ vars.PORT }}
+# env:
+#   MONGODB_CLUSTER_ADDRESS: ${{ secrets.MONGODB_CLUSTER_ADDRESS }}
+#   MONGODB_USERNAME: ${{ secrets.MONGODB_USERNAME }}
+#   MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
+#   PORT: ${{ secrets.PORT }}
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    environment: ${{ vars.envi }}
+    
     steps:
+      - name: Use variables
+        env:
+          MONGODB_CLUSTER_ADDRESS: ${{ secrets.MONGODB_CLUSTER_ADDRESS }}
+          MONGODB_USERNAME: ${{ secrets.MONGODB_USERNAME }}
+          MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
+          PORT: ${{ secrets.PORT }}
+  
       - name: Get Code
         uses: actions/checkout@v3
       - name: Cache dependencies
