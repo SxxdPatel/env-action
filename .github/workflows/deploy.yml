@@ -13,8 +13,8 @@ on:
 
 env:
   MONGODB_CLUSTER_ADDRESS: ${{ vars.MONGODB_CLUSTER_ADDRESS }}
-  MONGODB_USERNAME: ${{ vars.MONGODB_USERNAME }}
-  MONGODB_PASSWORD: ${{ vars.MONGODB_PASSWORD }}
+  MONGODB_USERNAME: ${{ secrets.MONGODB_USERNAME }}
+  MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
   PORT: ${{ vars.PORT }}
 
 jobs:
@@ -35,11 +35,11 @@ jobs:
       - name: Run tests
         run: npm test
       - name: Output information
-        run: echo "${{ env.MONGODB_USERNAME }}"
+        run: echo "${{ vars.MONGODB_USERNAME }}"
   deploy:
     needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Output information
         run: |        
-          echo "..."
+          echo "${{ secrets.MONGODB_USERNAME }}"
