@@ -1,58 +1,85 @@
-name: Deployment
+# name: Deployment
+# on:
+#   push:
+#     branches:
+#       - main
+#       - testing
+
+# # env:
+# #   MONGODB_CLUSTER_ADDRESS: cluster0.7pmgbgx.mongodb.net
+# #   MONGODB_USERNAME: psaad2422
+# #   MONGODB_PASSWORD: U2fGcdxcT6CjL03N
+# #   PORT: 8080
+
+# # env:
+# #   MONGODB_CLUSTER_ADDRESS: ${{ secrets.MONGODB_CLUSTER_ADDRESS }}
+# #   MONGODB_USERNAME: ${{ secrets.MONGODB_USERNAME }}
+# #   MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
+# #   PORT: ${{ secrets.PORT }}
+
+# jobs:
+#   # test:
+#   #   runs-on: ubuntu-latest
+#   #   environment: ${{ vars.envi }}
+#   #   env:
+#   #       MONGODB_CLUSTER_ADDRESS: ${{ secrets.MONGODB_CLUSTER_ADDRESS }}
+#   #       MONGODB_USERNAME: ${{ secrets.MONGODB_USERNAME }}
+#   #       MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
+#   #       PORT: ${{ secrets.PORT }}
+    
+#   #   steps:
+#   #     - name: Get Code
+#   #       uses: actions/checkout@v3
+#   #     - name: Cache dependencies
+#   #       uses: actions/cache@v3
+#   #       with:
+#   #         path: ~/.npm
+#   #         key: npm-deps-${{ hashFiles('**/package-lock.json') }}
+#   #     - name: Install dependencies
+#   #       run: npm ci
+#   #     - name: Run server
+#   #       run: npm start & npx wait-on http://127.0.0.1:$PORT
+#   #     - name: Run tests
+#   #       run: npm test
+#   #     - name: Output information
+#   #       run: echo "${{ vars.MONGODB_USERNAME }}"
+#   deploy:
+#     # needs: test
+#     runs-on: ubuntu-latest
+#     environment: ${{ vars.envi }}
+#     env:
+#         MONGODB_CLUSTER_ADDRESS: ${{ secrets.MONGODB_CLUSTER_ADDRESS }}
+#         MONGODB_USERNAME: ${{ secrets.MONGODB_USERNAME }}
+#         MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
+#         PORT: ${{ secrets.PORT }}
+#     steps:
+#       - name: Output information
+#         run: |        
+#           echo "${{ secrets.MONGODB_USERNAME }}"
+
+name: Deploy to Test Environment
+
 on:
   push:
     branches:
-      - main
       - testing
 
-# env:
-#   MONGODB_CLUSTER_ADDRESS: cluster0.7pmgbgx.mongodb.net
-#   MONGODB_USERNAME: psaad2422
-#   MONGODB_PASSWORD: U2fGcdxcT6CjL03N
-#   PORT: 8080
-
-# env:
-#   MONGODB_CLUSTER_ADDRESS: ${{ secrets.MONGODB_CLUSTER_ADDRESS }}
-#   MONGODB_USERNAME: ${{ secrets.MONGODB_USERNAME }}
-#   MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
-#   PORT: ${{ secrets.PORT }}
-
 jobs:
-  # test:
-  #   runs-on: ubuntu-latest
-  #   environment: ${{ vars.envi }}
-  #   env:
-  #       MONGODB_CLUSTER_ADDRESS: ${{ secrets.MONGODB_CLUSTER_ADDRESS }}
-  #       MONGODB_USERNAME: ${{ secrets.MONGODB_USERNAME }}
-  #       MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
-  #       PORT: ${{ secrets.PORT }}
-    
-  #   steps:
-  #     - name: Get Code
-  #       uses: actions/checkout@v3
-  #     - name: Cache dependencies
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: ~/.npm
-  #         key: npm-deps-${{ hashFiles('**/package-lock.json') }}
-  #     - name: Install dependencies
-  #       run: npm ci
-  #     - name: Run server
-  #       run: npm start & npx wait-on http://127.0.0.1:$PORT
-  #     - name: Run tests
-  #       run: npm test
-  #     - name: Output information
-  #       run: echo "${{ vars.MONGODB_USERNAME }}"
   deploy:
-    # needs: test
     runs-on: ubuntu-latest
-    environment: ${{ vars.envi }}
-    env:
-        MONGODB_CLUSTER_ADDRESS: ${{ secrets.MONGODB_CLUSTER_ADDRESS }}
-        MONGODB_USERNAME: ${{ secrets.MONGODB_USERNAME }}
-        MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
-        PORT: ${{ secrets.PORT }}
+    
     steps:
-      - name: Output information
-        run: |        
-          echo "${{ secrets.MONGODB_USERNAME }}"
+      - name: Deploy to test environment
+        if: github.ref == 'refs/heads/test'
+        run: |
+          echo "Deploying to test environment..."
+      
+      - name: Ignore failures example
+        if: failure()
+        continue-on-error: true
+        run: |
+          echo "This step will run even if previous steps failed"
+
+      - name: Another step after ignore failures
+        run: |
+          echo "This step will run even if previous steps failed, including 'Ignore failures example'"
