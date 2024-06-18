@@ -24,6 +24,7 @@ jobs:
     
     steps:
       - name: Use variables
+        run: echo "HIII" 
         env:
           MONGODB_CLUSTER_ADDRESS: ${{ secrets.MONGODB_CLUSTER_ADDRESS }}
           MONGODB_USERNAME: ${{ secrets.MONGODB_USERNAME }}
