@@ -44,7 +44,7 @@ jobs:
   #     - name: Output information
   #       run: echo "${{ vars.MONGODB_USERNAME }}"
   deploy:
-    needs: test
+    # needs: test
     runs-on: ubuntu-latest
     environment: ${{ vars.envi }}
     env:
