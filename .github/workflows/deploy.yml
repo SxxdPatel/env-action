@@ -73,6 +73,7 @@ jobs:
         if: github.ref == 'refs/heads/testing'
         run: |
           echo "Deploying to test environment..."
+          exit 1
       
       - name: Ignore failures example
         if: failure()
