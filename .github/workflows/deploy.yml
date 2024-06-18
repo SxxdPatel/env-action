@@ -70,7 +70,7 @@ jobs:
     
     steps:
       - name: Deploy to test environment
-        if: github.ref == 'refs/heads/test'
+        if: github.ref == 'refs/heads/testing'
         run: |
           echo "Deploying to test environment..."
       
