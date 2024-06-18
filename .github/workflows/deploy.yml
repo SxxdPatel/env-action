@@ -5,11 +5,17 @@ on:
       - main
       - dev
 
+# env:
+#   MONGODB_CLUSTER_ADDRESS: cluster0.7pmgbgx.mongodb.net
+#   MONGODB_USERNAME: psaad2422
+#   MONGODB_PASSWORD: U2fGcdxcT6CjL03N
+#   PORT: 8080
+
 env:
-  MONGODB_CLUSTER_ADDRESS: cluster0.7pmgbgx.mongodb.net
-  MONGODB_USERNAME: psaad2422
-  MONGODB_PASSWORD: U2fGcdxcT6CjL03N
-  PORT: 8080
+  MONGODB_CLUSTER_ADDRESS: ${{ vars.MONGODB_CLUSTER_ADDRESS }}
+  MONGODB_USERNAME: ${{ vars.MONGODB_USERNAME }}
+  MONGODB_PASSWORD: ${{ vars.MONGODB_PASSWORD }}
+  # PORT: ${{ vars.PORT }}
 
 jobs:
   test:
@@ -25,7 +31,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Run server
-        run: npm start & npx wait-on http://127.0.0.1:$PORT
+        run: npm start & npx wait-on http://127.0.0.1:${{vars.PORT}}
       - name: Run tests
         run: npm test
       - name: Output information
