@@ -77,10 +77,11 @@ jobs:
       
       - name: Ignore failures example
         if: failure()
-        continue-on-error: true
+        continue-on-error: false
         run: |
           echo "This step will run even if previous steps failed"
 
       - name: Another step after ignore failures
+        continue-on-error: true
         run: |
           echo "This step will run even if previous steps failed, including 'Ignore failures example'"
