@@ -20,7 +20,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    environment: ${{ vars.envi }}
+    environment: testing
     
     steps:
       - name: Use variables
