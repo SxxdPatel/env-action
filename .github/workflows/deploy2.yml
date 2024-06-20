@@ -134,7 +134,6 @@ jobs:
       image: node:16
 
     env:
-      MONGODB_CONNECTION_PROTOCOL: mongodb
       MONGODB_CLUSTER_ADDRESS: 127.0.0.1:27017
       MONGODB_USERNAME: root
       MONGODB_PASSWORD: example
@@ -161,12 +160,6 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Wait for MongoDB to be ready
-        run: |
-          wget https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
-          chmod +x wait-for-it.sh
-          ./wait-for-it.sh 127.0.0.1:27017 --timeout=60 --strict -- echo "MongoDB is up"
 
       - name: Run server
         run: npm start & npx wait-on http://127.0.0.1:8080
