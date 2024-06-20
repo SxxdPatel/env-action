@@ -82,7 +82,7 @@ jobs:
       MONGODB_CLUSTER_ADDRESS: mongodb
       MONGODB_USERNAME: root
       MONGODB_PASSWORD: example
-      PORT: ${{ secrets.PORT }}  # Use the port from secrets
+      PORT: 8080  # Use the port from secrets
 
     steps:
       - name: Get Code
