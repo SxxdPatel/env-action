@@ -66,23 +66,24 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+  
     container:
       image: node:16
+    env:
+      MONGODB_CONNECTION_PROTOCOL: mongodb
+      MONGODB_CLUSTER_ADDRESS: mongodb
+      MONGODB_USERNAME: root
+      MONGODB_PASSWORD: example
+      PORT: 8080  # Use the port from secrets
 
     services:
       mongodb:
-        image: mongo:latest
+        image: mongo
         ports:
           - 27017:27017
         env:
           MONGO_INITDB_ROOT_USERNAME: root
           MONGO_INITDB_ROOT_PASSWORD: example
-
-    env:
-      MONGODB_CLUSTER_ADDRESS: mongodb
-      MONGODB_USERNAME: root
-      MONGODB_PASSWORD: example
-      PORT: 8080  # Use the port from secrets
 
     steps:
       - name: Get Code
