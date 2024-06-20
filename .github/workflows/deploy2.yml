@@ -55,6 +55,7 @@
 
 
 
+
 name: Deployment
 on:
   push:
@@ -65,81 +66,50 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+  
     container:
       image: node:16
+    env:
+      MONGODB_CONNECTION_PROTOCOL: mongodb
+      MONGODB_CLUSTER_ADDRESS: mongodb
+      MONGODB_USERNAME: root
+      MONGODB_PASSWORD: example
+      PORT: 8080  # Use the port from secrets
 
     services:
       mongodb:
-        image: mongo:latest
+        image: mongo
         ports:
           - 27017:27017
         env:
           MONGO_INITDB_ROOT_USERNAME: root
           MONGO_INITDB_ROOT_PASSWORD: example
 
-    env:
-      MONGODB_CLUSTER_ADDRESS: mongodb
-      MONGODB_USERNAME: root
-      MONGODB_PASSWORD: example
-      PORT: 27017
-
     steps:
       - name: Get Code
         uses: actions/checkout@v3
-      
       - name: Cache dependencies
         uses: actions/cache@v3
         with:
           path: ~/.npm
           key: npm-deps-${{ hashFiles('**/package-lock.json') }}
-
       - name: Install dependencies
         run: npm ci
-
-      - name: Download wait-for-it.sh
-        run: wget https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
-        shell: bash
-
-      - name: Make wait-for-it.sh executable
-        run: chmod +x wait-for-it.sh
-        shell: bash
-
-      - name: Wait for MongoDB to be ready
-        run: ./wait-for-it.sh mongodb:27017 --timeout=60 --strict -- echo "MongoDB is up"
-        shell: bash
-
       - name: Run server
-        run: npm start & npx wait-on http://127.0.0.1:${{ secrets.PORT }}
-        shell: bash
-
+        run: npm start & npx wait-on http://127.0.0.1:$PORT
       - name: Run tests
         run: npm test
-
       - name: Output information
         run: echo "${{ vars.MONGODB_USERNAME }}"
 
   deploy:
     needs: test
     runs-on: ubuntu-latest
-    container:
-      image: node:16
-
-    services:
-      mongodb:
-        image: mongo:latest
-        ports:
-          - 27017:27017
-        env:
-          MONGO_INITDB_ROOT_USERNAME: root
-          MONGO_INITDB_ROOT_PASSWORD: example
-
-    env:
-      MONGODB_CLUSTER_ADDRESS: mongodb
-      MONGODB_USERNAME: root
-      MONGODB_PASSWORD: example
-      PORT: ${{ secrets.PORT }}  # Use the port from secrets
-
     steps:
       - name: Output information
-        run: |
-          echo "${{ secrets.MONGODB_USERNAME }}"
+        env:
+          PORT: 3000
+        run: |        
+          echo "MONGODB_DB_NAME: $MONGODB_DB_NAME"
+          echo "MONGODB_USERNAME: $MONGODB_USERNAME"
+          echo "${{ env.PORT }}"
