@@ -74,15 +74,15 @@ jobs:
         image: mongo:latest
         ports:
           - 27017:27017
-        environment:
-          MONGODB_USERNAME: root
-          MONGODB_PASSWORD: example
+        env:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: example
 
     env:
       MONGODB_CLUSTER_ADDRESS: mongodb
       MONGODB_USERNAME: root
       MONGODB_PASSWORD: example
-      PORT: 27017  # Use the port from secrets
+      PORT: ${{ secrets.PORT }}  # Use the port from secrets
 
     steps:
       - name: Get Code
@@ -112,7 +112,7 @@ jobs:
         image: mongo:latest
         ports:
           - 27017:27017
-        environment:
+        env:
           MONGO_INITDB_ROOT_USERNAME: root
           MONGO_INITDB_ROOT_PASSWORD: example
 
@@ -126,3 +126,4 @@ jobs:
       - name: Output information
         run: |
           echo "${{ secrets.MONGODB_USERNAME }}"
+
