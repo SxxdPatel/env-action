@@ -115,27 +115,31 @@
 #           echo "${{ env.PORT }}"
 
 
-
 name: Deployment (Container)
 on:
   push:
     branches:
       - main
       - testing
+
 env:
   CACHE_KEY: node-deps
   MONGODB_DB_NAME: gha-demo
+
 jobs:
   test:
     environment: testing
     runs-on: ubuntu-latest
-    # container:
-    #   image: node:16
+    container:
+      image: node:16
+
     env:
       MONGODB_CONNECTION_PROTOCOL: mongodb
       MONGODB_CLUSTER_ADDRESS: 127.0.0.1:27017
       MONGODB_USERNAME: root
       MONGODB_PASSWORD: example
+      PORT: 8080
+
     services:
       mongodb:
         image: mongo
@@ -144,31 +148,45 @@ jobs:
         env:
           MONGO_INITDB_ROOT_USERNAME: root
           MONGO_INITDB_ROOT_PASSWORD: example
+
     steps:
       - name: Get Code
         uses: actions/checkout@v3
+
       - name: Cache dependencies
         uses: actions/cache@v3
         with:
           path: ~/.npm
           key: ${{ env.CACHE_KEY }}-${{ hashFiles('**/package-lock.json') }}
+
       - name: Install dependencies
         run: npm ci
+
+      - name: Wait for MongoDB to be ready
+        run: |
+          wget https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
+          chmod +x wait-for-it.sh
+          ./wait-for-it.sh 127.0.0.1:27017 --timeout=60 --strict -- echo "MongoDB is up"
+
       - name: Run server
-        run: npm start & npx wait-on http://127.0.0.1:$PORT # requires MongoDB Atlas to accept requests from anywhere!
+        run: npm start & npx wait-on http://127.0.0.1:8080
+
       - name: Run tests
         run: npm test
+
       - name: Output information
         run: |
           echo "MONGODB_USERNAME: $MONGODB_USERNAME"
+
   deploy:
     needs: test
     runs-on: ubuntu-latest
+
     steps:
       - name: Output information
         env:
           PORT: 3000
-        run: |        
+        run: |
           echo "MONGODB_DB_NAME: $MONGODB_DB_NAME"
           echo "MONGODB_USERNAME: $MONGODB_USERNAME"
           echo "${{ env.PORT }}"
